@@ -15,6 +15,7 @@ var all_collector = [];
 var all_debtor = [];
 
 const io = socketIO(http, {
+  allowEIO3: true ,
   cors: {
     origin: "*",
     methods: ["GET", "POST"],

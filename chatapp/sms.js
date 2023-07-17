@@ -19,6 +19,7 @@ app.use(bodyParser.urlencoded({ limit: "50mb", extended: true }));
 app.use(bodyParser.json());
 
 const io = socketIO(http, {
+  allowEIO3: true ,
   cors: {
     origin: "*",
     methods: ["GET", "POST"],
