@@ -1,7 +1,9 @@
 var express = require('express');
 var app = express();
 var http = require('http').Server(app);
-var io = require('socket.io')(http);
+var io = require('socket.io')(http,{
+  allowEIO3: true // false by default
+});
 var mysql = require('mysql');
 var fs = require('fs');
 var path = require('path');
