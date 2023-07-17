@@ -18,9 +18,12 @@ const io = socketIO(http, {
 
 
 app.use(function (req, res, next) {
-  let origin = req.headers.origin ?? "*";
+  let origin = req.get('origin') ?req.get('origin'): "*";
+  let method = req.method;
+  console.log(origin);
+  console.log(method);
   res.setHeader("Access-Control-Allow-Origin", origin);
-  res.setHeader("Access-Control-Allow-Methods", req.method);
+  res.setHeader("Access-Control-Allow-Methods", method);
   res.header("Access-Control-Allow-Headers", "Content-Type");
   res.removeHeader("x-powered-by");
   next();
