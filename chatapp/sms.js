@@ -4,7 +4,7 @@ var http = require('http').Server(app);
 var io = require('socket.io')(http,{
   allowEIO3: true, // false by default,
   cors: {
-    origin: ["https://totalcollectr.dev"],
+    origin: ["*"],//https://totalcollectr.dev
     credentials: true
   }
 });
