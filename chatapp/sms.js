@@ -1,5 +1,6 @@
 var express = require('express');
 var app = express();
+const cors = require('cors');
 var http = require('http').Server(app);
 var io = require('socket.io')(http,{
   allowEIO3: true, // false by default,
