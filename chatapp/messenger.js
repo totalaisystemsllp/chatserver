@@ -10,6 +10,7 @@ var path = require("path");
 var bodyParser = require("body-parser");
 
 const io = socketIO(http, {
+  allowEIO3: true ,
   cors: {
     origin: "*",
     methods: ["GET", "POST"],
