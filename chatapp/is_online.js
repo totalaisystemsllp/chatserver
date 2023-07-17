@@ -1,43 +1,13 @@
 var express = require('express');
 var app = express();
 var http = require('http').Server(app);
-var socketIO = require("socket.io");
+var io = require('socket.io')(http);
 var mysql = require('mysql');
 var fs = require('fs');
 var path = require('path');
 var bodyParser = require('body-parser');
-var cors = require("cors");
-
-const io = socketIO(http, {
-  allowEIO3: true ,
-  cors: {
-    origin: "*",
-    methods: ["GET", "POST"],
-  },
-});
 
 
-app.use(function (req, res, next) {
-  let origin = req.get('origin') ?req.get('origin'): "*";
-  let method = req.method;
-  console.log(origin);
-  console.log(method);
-  res.setHeader("Access-Control-Allow-Origin", origin);
-  res.setHeader("Access-Control-Allow-Methods", method);
-  res.header("Access-Control-Allow-Headers", "Content-Type");
-  res.removeHeader("x-powered-by");
-  next();
-});
-
-const corsOpts = {
-  origin: "*",
-
-  methods: ["GET", "POST"],
-
-  allowedHeaders: ["Content-Type"],
-};
-
-app.use(cors(corsOpts));
 
 app.use(bodyParser.json({limit: '50mb'}));
 app.use(bodyParser.urlencoded({limit: '50mb', extended: true}));
