@@ -7,3 +7,4 @@ hooks:
  ApplicationStart:
     - location: scripts/new.sh
       runas: root
+  
