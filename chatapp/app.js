@@ -5,15 +5,13 @@ var mysql = require('mysql');
 var fs = require('fs');
 var path = require('path');
 var bodyParser = require('body-parser');
+const cors = require('cors');
 
 var database_config = require('./database_config');
-var io = require('socket.io')(http,{
-  allowEIO3: true, // false by default,
-  cors: {
-    origin: ["https://totalcollectr.dev"],
-    credentials: true
-  }
-});
+var socketIo = require('socket.io');
+var io= socketIo(http);
+io.use(cors());
+
 app.use(bodyParser.json({limit: '50mb'}));
 app.use(bodyParser.urlencoded({limit: '50mb', extended: true}));
 app.use(bodyParser.json());
@@ -42,13 +40,13 @@ var all_debtor=[];
 
 var client='';
 app.use(function(req, res, next) {
-  console.log("tttt")
+  // console.log("tttt")
  
   client=req.query;
     res.header('Access-Control-Allow-Origin', "*");
     res.header('Access-Control-Allow-Methods','GET,PUT,POST,DELETE');
     res.header('Access-Control-Allow-Headers', 'Content-Type');
-   console.log(req,"tttt")
+  //  console.log(req,"tttt")
    next();
   })
     
