@@ -1,14 +1,19 @@
 var express = require('express');
 var app = express();
 var http = require('http').Server(app);
-var io = require('socket.io')(http);
 var mysql = require('mysql');
 var fs = require('fs');
 var path = require('path');
 var bodyParser = require('body-parser');
 
 var database_config = require('./database_config');
-
+var io = require('socket.io')(http,{
+  allowEIO3: true, // false by default,
+  cors: {
+    origin: ["https://totalcollectr.dev"],
+    credentials: true
+  }
+});
 app.use(bodyParser.json({limit: '50mb'}));
 app.use(bodyParser.urlencoded({limit: '50mb', extended: true}));
 app.use(bodyParser.json());
