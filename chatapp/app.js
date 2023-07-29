@@ -124,8 +124,9 @@ io.on("connection", (socket) => {
       browser_info = null,
       device_info = null
     ) {
+       accessLogStream.write("User registered" + '\n');
       if (role == "debtor") {
-        socket.emit("registered", caht_user_id, thread_id);
+        
         var sql =
           "INSERT INTO chat_user (account_number,fullname,email,phone) VALUES ('" +
           userId +
