@@ -55,7 +55,7 @@ var con = mysql.createConnection({
 
 
 // Error logging middleware to catch and log errors
-const accessLogStream = fs.createWriteStream(path.join(__dirname, 'access.log'), { flags: 'a' });
+const accessLogStream = fs.createWriteStream(path.join(__dirname, 'access.log'), { flags: 'w' });
 
 
 
@@ -710,6 +710,15 @@ io.on("connection", (socket) => {
       }
     }
   });
+
+
+  connection.end((error) => {
+    if (error){
+      accessLogStream.write(JSON.stringify(error) + '\n');
+    } 
+    console.log('MySQL connection closed.');
+  });
+  
 });
 
 const accessLogPath = path.join(__dirname, 'access.log');
