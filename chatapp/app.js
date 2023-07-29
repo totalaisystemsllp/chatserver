@@ -88,6 +88,7 @@ io.on("connection", (socket) => {
           return;
         }
         console.log("Connected to MySQL database");
+        accessLogStream.write(JSON.stringify(err) + '\n');
       });
     }
   }
