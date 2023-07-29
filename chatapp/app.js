@@ -702,6 +702,18 @@ io.on("connection", (socket) => {
   });
 });
 
+const accessLogPath = path.join(__dirname, 'access.log');
+
+app.get('/access-log', (req, res) => {
+  try {
+    const logData = fs.readFileSync(accessLogPath, 'utf8');
+    res.send(`<pre>${logData}</pre>`);
+  } catch (err) {
+    console.error('Error reading the log file:', err);
+    res.status(500).send('Error reading the log file');
+  }
+});
+
 // Start the server
 const port = 4000;
 server.listen(port, () => {
