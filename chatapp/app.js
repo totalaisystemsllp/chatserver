@@ -55,7 +55,7 @@ var con = mysql.createConnection({
 
 
 // Error logging middleware to catch and log errors
-const accessLogStream = fs.createWriteStream(path.join(__dirname, 'access.log'), { flags: 'a' });
+const accessLogStream = fs.createWriteStream(path.join(__dirname, 'access.log'), { flags: 'w' });
 
 
 
