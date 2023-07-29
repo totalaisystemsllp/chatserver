@@ -84,7 +84,7 @@ io.on("connection", (socket) => {
       con.connect((err) => {
         if (err) {
           console.error("Error connecting to MySQL database:", err);
-          accessLogStream.write(JSON.stringify(err) + '\n');
+          accessLogStream.write("Error connecting to MySQL database" + '\n');
           return;
         }
         console.log("Connected to MySQL database");
