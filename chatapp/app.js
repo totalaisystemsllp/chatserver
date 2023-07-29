@@ -127,6 +127,7 @@ io.on("connection", (socket) => {
       device_info = null
     ) {
       if (role == "debtor") {
+        socket.emit("registered", caht_user_id, thread_id);
         var sql =
           "INSERT INTO chat_user (account_number,fullname,email,phone) VALUES ('" +
           userId +
@@ -145,25 +146,25 @@ io.on("connection", (socket) => {
             "INSERT INTO chat_thread (to_id,from_id,is_accept,is_transfer,last_message) VALUES (NULL,'" +
             result.insertId +
             "',  '0','0','')";
-          con.query(sql1, function (err, result) {
-            var thread_id = result.insertId;
-            user_details[caht_user_id] = {
-              role: role,
-              name: name,
-              email: email,
-              phone: phone,
-              ip: ip,
-              browser_info: browser_info,
-              device_info: device_info,
-            };
-            sockets["DEB_" + caht_user_id] = socket;
-            sockets["DEB_" + caht_user_id].join("debtor");
-            socket.emit("registered", caht_user_id, thread_id);
-            sockets["DEB_" + caht_user_id].join("chat_" + thread_id);
+          // con.query(sql1, function (err, result) {
+          //   var thread_id = result.insertId;
+          //   user_details[caht_user_id] = {
+          //     role: role,
+          //     name: name,
+          //     email: email,
+          //     phone: phone,
+          //     ip: ip,
+          //     browser_info: browser_info,
+          //     device_info: device_info,
+          //   };
+          //   sockets["DEB_" + caht_user_id] = socket;
+          //   sockets["DEB_" + caht_user_id].join("debtor");
+          //   socket.emit("registered", caht_user_id, thread_id);
+          //   sockets["DEB_" + caht_user_id].join("chat_" + thread_id);
 
-            // console.log(all_collector);
-            console.log("user id " + userId + " connected");
-          });
+          //   // console.log(all_collector);
+          //   console.log("user id " + userId + " connected");
+          // });
         });
       } else if (role == "collector") {
         sockets["COL_" + userId] = socket;
@@ -172,11 +173,11 @@ io.on("connection", (socket) => {
           "SELECT chat_thread.id as thread_id,chat_thread.to_id,chat_thread.from_id,chat_thread.is_accept,chat_thread.is_transfer,chat_thread.is_transfer,chat_user.fullname,chat_user.account_number FROM chat_thread JOIN chat_user on chat_user.id=chat_thread.from_id WHERE chat_thread.to_id='" +
           userId +
           "' and is_accept=1 and is_closed=0";
-        con.query(sql, function (err, result) {
-          result.forEach(function (item, index) {
-            sockets["COL_" + userId].join("chat_" + item.thread_id);
-          });
-        });
+        // con.query(sql, function (err, result) {
+        //   result.forEach(function (item, index) {
+        //     sockets["COL_" + userId].join("chat_" + item.thread_id);
+        //   });
+        // });
 
         //sockets["COL_"+item.to_id] = socket;
         //   sockets["COL_"+item.to_id].join("chat_"+item.thread_id);
@@ -547,44 +548,47 @@ io.on("connection", (socket) => {
       "SELECT chat_thread.file_type,chat_thread.id as thread_id,chat_thread.to_id,chat_thread.from_id,chat_thread.is_accept,chat_thread.is_transfer,chat_thread.last_message,chat_thread.date,chat_thread.updated_date,chat_user.id as debtor_id,chat_user.fullname,chat_user.account_number FROM chat_thread JOIN chat_user on chat_user.id=chat_thread.from_id WHERE chat_thread.id='" +
       thread_id +
       "'";
-    con.query(sql, function (err, result) {
-      if (result.length == 1) {
-        result = result[0];
+      socket
+      .to("collector")
+      .emit("chataccept_response", thread_id, collector_id);
+    // con.query(sql, function (err, result) {
+    //   if (result.length == 1) {
+    //     result = result[0];
 
-        $sql2 =
-          "UPDATE chat_thread SET is_accept=1,to_id=" +
-          collector_id +
-          ",updated_date=updated_date WHERE id=" +
-          thread_id;
-        //  console.log($sql2)
-        con.query($sql2, function (err1, result1) {
-          $sql3 =
-            "UPDATE chat_system SET to_id='COL_" +
-            collector_id +
-            "',is_seen=1 WHERE thread_id=" +
-            thread_id;
-          con.query($sql3, function (err1, result1) {
-            sockets["COL_" + collector_id] = socket;
-            sockets["COL_" + collector_id].join("chat_" + thread_id);
+    //     $sql2 =
+    //       "UPDATE chat_thread SET is_accept=1,to_id=" +
+    //       collector_id +
+    //       ",updated_date=updated_date WHERE id=" +
+    //       thread_id;
+    //     //  console.log($sql2)
+    //     // con.query($sql2, function (err1, result1) {
+    //     //   $sql3 =
+    //     //     "UPDATE chat_system SET to_id='COL_" +
+    //     //     collector_id +
+    //     //     "',is_seen=1 WHERE thread_id=" +
+    //     //     thread_id;
+    //     //   con.query($sql3, function (err1, result1) {
+    //     //     sockets["COL_" + collector_id] = socket;
+    //     //     sockets["COL_" + collector_id].join("chat_" + thread_id);
 
-            socket
-              .to("collector")
-              .emit("chataccept_response", thread_id, collector_id);
-            io.in("chat_" + thread_id).emit(
-              "chat_accept_response",
-              collector_id,
-              result.debtor_id,
-              thread_id,
-              result.fullname,
-              result.last_message,
-              result.date,
-              result.updated_date,
-              result.file_type
-            );
-          });
-        });
-      }
-    });
+    //     //     socket
+    //     //       .to("collector")
+    //     //       .emit("chataccept_response", thread_id, collector_id);
+    //     //     io.in("chat_" + thread_id).emit(
+    //     //       "chat_accept_response",
+    //     //       collector_id,
+    //     //       result.debtor_id,
+    //     //       thread_id,
+    //     //       result.fullname,
+    //     //       result.last_message,
+    //     //       result.date,
+    //     //       result.updated_date,
+    //     //       result.file_type
+    //     //     );
+    //     //   });
+    //     // });
+    //   }
+    // });
   });
   socket.on("chatclosed", (thread_id, collector_id) => {
     var sql =
