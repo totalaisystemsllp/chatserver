@@ -71,6 +71,7 @@ io.on("connection", (socket) => {
 
    socket.on("test",function(){
      socket.emit("test_response",1,2);
+      accessLogStream.write(JSON.stringify("Connect") + '\n');
    });
 
    // Handle socket errors
