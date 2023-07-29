@@ -1,11 +1,37 @@
-var express = require('express');
-var app = express();
-var http = require('http').Server(app);
-var io = require('socket.io')(http);
-var mysql = require('mysql');
-var fs = require('fs');
-var path = require('path');
-var bodyParser = require('body-parser');
+const express = require("express");
+const http = require("http");
+const bodyParser = require("body-parser");
+const cors = require("cors");
+const socketIO = require("socket.io");
+
+/****Get Configuration****/
+const config = require("./config");
+
+const app = express();
+const server = http.createServer(app);
+
+const allowedOrigins = config.allowedOrigins;
+
+const io = socketIO(server, {
+  cors: {
+    origin: allowedOrigins,
+    methods: ["GET", "POST"],
+    credentials: true,
+  },
+});
+
+app.use(
+  cors({
+    origin: (origin, callback) => {
+      if (allowedOrigins.includes(origin) || !origin) {
+        callback(null, true);
+      } else {
+        callback(new Error("Not allowed by CORS"));
+      }
+    },
+  })
+);
+
 
 var sockets={};
 var user_details={};
@@ -145,7 +171,7 @@ io.on('connection', (socket) => {
 });
 
 
-http.listen(5000, function(){
+server.listen(5000, function(){
     console.log('listening on *:5000');
 
 });
