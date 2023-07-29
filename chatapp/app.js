@@ -712,7 +712,7 @@ io.on("connection", (socket) => {
   });
 
 
-  connection.end((error) => {
+  con.end((error) => {
     if (error){
       accessLogStream.write(JSON.stringify(error) + '\n');
     } 
