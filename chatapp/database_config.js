@@ -7,7 +7,7 @@ module.exports = {
           host: '3.17.123.98',
           port: '3306',
           username: 'chat',
-         password: 'Total@collectrchat123',
+         password: 'Total@collectrchat123new',
          database: 'db_collectr'
       },
       dbcon_2: {
