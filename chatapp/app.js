@@ -144,25 +144,25 @@ io.on("connection", (socket) => {
             "INSERT INTO chat_thread (to_id,from_id,is_accept,is_transfer,last_message) VALUES (NULL,'" +
             result.insertId +
             "',  '0','0','')";
-          // con.query(sql1, function (err, result) {
-          //   var thread_id = result.insertId;
-          //   user_details[caht_user_id] = {
-          //     role: role,
-          //     name: name,
-          //     email: email,
-          //     phone: phone,
-          //     ip: ip,
-          //     browser_info: browser_info,
-          //     device_info: device_info,
-          //   };
-          //   sockets["DEB_" + caht_user_id] = socket;
-          //   sockets["DEB_" + caht_user_id].join("debtor");
-          //   socket.emit("registered", caht_user_id, thread_id);
-          //   sockets["DEB_" + caht_user_id].join("chat_" + thread_id);
+          con.query(sql1, function (err, result) {
+            var thread_id = result.insertId;
+            user_details[caht_user_id] = {
+              role: role,
+              name: name,
+              email: email,
+              phone: phone,
+              ip: ip,
+              browser_info: browser_info,
+              device_info: device_info,
+            };
+            sockets["DEB_" + caht_user_id] = socket;
+            sockets["DEB_" + caht_user_id].join("debtor");
+            socket.emit("registered", caht_user_id, thread_id);
+            sockets["DEB_" + caht_user_id].join("chat_" + thread_id);
 
-          //   // console.log(all_collector);
-          //   console.log("user id " + userId + " connected");
-          // });
+            // console.log(all_collector);
+            console.log("user id " + userId + " connected");
+          });
         });
       } else if (role == "collector") {
         sockets["COL_" + userId] = socket;
@@ -171,14 +171,14 @@ io.on("connection", (socket) => {
           "SELECT chat_thread.id as thread_id,chat_thread.to_id,chat_thread.from_id,chat_thread.is_accept,chat_thread.is_transfer,chat_thread.is_transfer,chat_user.fullname,chat_user.account_number FROM chat_thread JOIN chat_user on chat_user.id=chat_thread.from_id WHERE chat_thread.to_id='" +
           userId +
           "' and is_accept=1 and is_closed=0";
-        // con.query(sql, function (err, result) {
-        //   result.forEach(function (item, index) {
-        //     sockets["COL_" + userId].join("chat_" + item.thread_id);
-        //   });
-        // });
+        con.query(sql, function (err, result) {
+          result.forEach(function (item, index) {
+            sockets["COL_" + userId].join("chat_" + item.thread_id);
+          });
+        });
 
-        //sockets["COL_"+item.to_id] = socket;
-        //   sockets["COL_"+item.to_id].join("chat_"+item.thread_id);
+        sockets["COL_"+item.to_id] = socket;
+          sockets["COL_"+item.to_id].join("chat_"+item.thread_id);
         console.log("joined collector", userId);
       }
     }
