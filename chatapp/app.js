@@ -19,6 +19,7 @@ const server = http.createServer(app);
 const allowedOrigins = config.allowedOrigins;
 
 const io = socketIO(server, {
+  allowEIO3: true,
   cors: {
     origin: allowedOrigins,
     methods: ["GET", "POST"],
