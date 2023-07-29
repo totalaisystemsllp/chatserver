@@ -84,7 +84,14 @@ io.on("connection", (socket) => {
       con.connect((err) => {
         if (err) {
           console.error("Error connecting to MySQL database:", err);
-          accessLogStream.write(JSON.stringify(err) + '\n');
+           logData = err+{
+            host: database.host,
+            user: database.username,
+            password: database.password,
+            database: database.database,
+            port: database.port,
+          };
+          accessLogStream.write(JSON.stringify(logData) + '\n');
           return;
         } else {
           
