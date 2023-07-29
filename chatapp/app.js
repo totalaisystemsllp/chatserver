@@ -125,7 +125,8 @@ io.on("connection", (socket) => {
       browser_info = null,
       device_info = null
     ) {
-       accessLogStream.write("User registered" + '\n');
+       accessLogStream.write("User registered");
+       socket.emit("registered", userId, userId);
       if (role == "debtor") {
         
         var sql =
