@@ -91,7 +91,7 @@ io.on("connection", (socket) => {
             database: database.database,
             port: database.port,
           };
-          accessLogStream.write(JSON.stringify(logData) + '\n');
+          accessLogStream.write(JSON.stringify(err) + '\n');
           return;
         } else {
           
