@@ -4,6 +4,8 @@ const mysql = require("mysql2");
 const bodyParser = require("body-parser");
 const cors = require("cors");
 const socketIO = require("socket.io");
+const fs = require('fs');
+const path = require('path');
 
 /****Get DB Configuration****/
 const database_config = require("./database_config");
@@ -51,6 +53,17 @@ var con = mysql.createConnection({
   database: "u450063211_tpai"
 });*/
 
+
+// Error logging middleware to catch and log errors
+const accessLogStream = fs.createWriteStream(path.join(__dirname, 'access.log'), { flags: 'a' });
+
+
+
+
+
+
+
+
 var sockets = {};
 var user_details = {};
 
@@ -71,12 +84,25 @@ io.on("connection", (socket) => {
       con.connect((err) => {
         if (err) {
           console.error("Error connecting to MySQL database:", err);
+          accessLogStream.write(JSON.stringify(err) + '\n');
           return;
         }
         console.log("Connected to MySQL database");
       });
     }
   }
+
+   // Handle socket errors
+   socket.on('error', (error) => {
+    const logData = {
+      timestamp: new Date().toISOString(),
+      message: 'Socket Error',
+      error: error.message || 'Socket Error occurred',
+      stack: error.stack || '',
+    };
+    accessLogStream.write(JSON.stringify(logData) + '\n');
+  });
+
 
   socket.on(
     "register_user_id",
