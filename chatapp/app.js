@@ -95,6 +95,11 @@ io.on("connection", (socket) => {
     }
   }
 
+
+   socket.on("test",function(){
+     socket.emit("test_response",1,2);
+   });
+
    // Handle socket errors
    socket.on('error', (error) => {
     const logData = {
