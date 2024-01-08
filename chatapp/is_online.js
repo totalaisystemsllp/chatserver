@@ -67,6 +67,18 @@ io.on('connection', (socket) => {
         // console.log(sockets); 
     });
 
+  
+  /**
+   * Listen for 'chat message' events.
+   * When a 'chat message' event is received, this function is executed.
+   * It emits the received message to all connected clients using socket.io.
+   *
+   * @param {string} message - The message received from the client.
+   */
+  socket.on('chat message', (message) => {
+    io.emit('chat message', message);
+  });
+  
   socket.on('search_user',function(id){       
         socket.join(id);
         if(users.hasOwnProperty(id))
