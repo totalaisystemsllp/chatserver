@@ -30,7 +30,23 @@ module.exports = {
         username: 'chat',
         password: 'f54nRGbTIDq38mC93CBgCLYR^4i',
         database: 'beam_total_db'
+       },
+        dbcon_NCS: {
+        host: '3.12.119.224',
+        port: '3306',
+        username: 'chat',
+        password: 'B-"EUymN[&K@k=zpT68u#%',
+        database: 'kXiV6NzljFfew'
+       },
+        dbcon_DMA: {
+        host: '3.21.155.230',
+        port: '3306',
+        username: 'chat',
+        password: 't(Z;@UMx,RuNqjG"*[48!6',
+        database: 'xUrV6VCpoNCZA'
        }
+
+
 
      }
 };
