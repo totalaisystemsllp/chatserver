@@ -44,6 +44,13 @@ module.exports = {
         username: 'chat',
         password: 't(Z;@UMx,RuNqjG"*[48!6',
         database: 'xUrV6VCpoNCZA'
+       },
+        dbcon_scott: {
+        host: '3.128.106.253',
+        port: '3306',
+        username: 'chat',
+        password: 't(Z;@UMx,RuNqjG"*[48!6',
+        database: 'v2O7laZG74iyYA'
        }
 
 
