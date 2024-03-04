@@ -52,8 +52,5 @@ module.exports = {
         password: 't(Z;@UMx,RuNqjG"*[48!6',
         database: 'v2O7laZG74iyYA'
        }
-
-
-
      }
 };
