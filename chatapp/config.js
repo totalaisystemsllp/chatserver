@@ -12,7 +12,6 @@ module.exports = {
     "https://alliant.beamcollects.com",
     "https://financesystems.totalcollectr.io",
     "https://beamcollects.com",
-    "https://lshholdings.totalcollectr.io",
     "https://mfs.totalcollectr.io",
     "https://ncs.totalcollectr.io",
     "https://radbills.totalcollectr.io",
