@@ -44,5 +44,7 @@ module.exports = {
     "https://dca.totalcollectr.io",
     "https://dca.totalcollectr.io",
     "https://pyxiscollects.com",
+    "https://natcredsys.com",
+    "https://dma.totalcollectr.io",
   ],
 };
