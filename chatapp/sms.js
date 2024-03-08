@@ -47,12 +47,11 @@ app.use(bodyParser.urlencoded({ limit: "50mb", extended: true }));
 app.use(bodyParser.json());
 
 app.post("/", (req, res) => {
-  console.log("data from post:", req.body);
-
   var data = req.body;
-
+  let db = req.body.db ?? null;
+  let roomName = `ROOM_${db}`;
   if (data.is_accept == 0) {
-    io.to("collector").emit("mgs_req_from_debtor", data);
+    io.to(roomName).emit("mgs_req_from_debtor", data);
     console.log("message request to all collector");
   } else if (data.is_accept == 1) {
     io.to(data.thread_id).emit("mgs_from_debtor", data);
@@ -70,30 +69,30 @@ io.on("connection", (socket) => {
   socket.on(
     "register_user_id",
     function (userId, old_thread_list = [], role, name, email = null) {
-      let scoketId = `${dbName}_${userId}`;
-      sockets[scoketId] = socket;
-      all_collector.push(scoketId);
+      let socketId = `${dbName}_${userId}`;
+      sockets[socketId] = socket;
+      all_collector.push(socketId);
       // array unique
       all_collector = all_collector.filter((x, i, a) => a.indexOf(x) == i);
-      user_details[scoketId] = {
+      user_details[socketId] = {
         userId: userId,
         role: role,
         name: name,
         email: email,
       };
-      sockets[scoketId].join(roomName);
+      sockets[socketId].join(roomName);
 
       for (var i = 0; i < old_thread_list.length; i++) {
-        sockets[scoketId].join(old_thread_list[i]);
+        sockets[socketId].join(old_thread_list[i]);
       }
     }
   );
 
   socket.on("req_accept", function (thread_id, coll_id) {
-    let scoketId = `${dbName}_${coll_id}`;
+    let socketId = `${dbName}_${coll_id}`;
 
-    sockets[scoketId].join(thread_id);
-    rooms[thread_id] = { coll_id: scoketId };
+    sockets[socketId].join(thread_id);
+    rooms[thread_id] = { coll_id: socketId };
 
     socket.to(roomName).emit("remove_req_accept", thread_id);
   });
@@ -107,10 +106,10 @@ io.on("connection", (socket) => {
     (thread_id, from_collector_id, to_collector_id) => {
       socket.leave(thread_id);
 
-      let scoketId = `${dbName}_${coll_id}`;
+      let socketId = `${dbName}_${to_collector_id}`;
 
-      if (sockets.hasOwnProperty(scoketId)) {
-        sockets[scoketId].join(thread_id);
+      if (sockets.hasOwnProperty(socketId)) {
+        sockets[socketId].join(thread_id);
         io.to(thread_id).emit("transfered_chat", { thread_id: thread_id });
       }
     }
