@@ -52,7 +52,7 @@ app.post("/", (req, res) => {
   var data = req.body;
 
   if (data.is_accept == 0) {
-    io.to("collector").emit("mgs_req_from_debtor", data);
+    io.to('ROOM_dbcon_DMA').emit("mgs_req_from_debtor", data);
     console.log("message request to all collector");
   } else if (data.is_accept == 1) {
     io.to(data.thread_id).emit("mgs_from_debtor", data);
