@@ -64,35 +64,29 @@ app.post("/", (req, res) => {
 /**************Socket Connection**********************/
 
 io.on("connection", (socket) => {
-  dbName += socket.handshake.query.db;
+  dbName = socket.handshake.query.db ?? "";
   socket.on(
     "register_user_id",
     function (userId, old_thread_list = [], role, name, email = null) {
-      sockets[dbName + userId] = socket;
-      all_collector.push(dbName + userId);
+      let scoketId = `COL_${dbName}_${userId}`;
+
+      sockets[scoketId] = socket;
+      all_collector.push(scoketId);
       // array unique
       all_collector = all_collector.filter((x, i, a) => a.indexOf(x) == i);
-      user_details[dbName + userId] = {
+      user_details[scoketId] = {
         userId: userId,
         role: role,
         name: name,
         email: email,
       };
-      sockets[dbName + userId].join("collector");
+      sockets[scoketId].join(role);
 
-      console.log(dbName + userId + " user connected");
-      console.log(user_details);
-      console.log(all_collector);
+      console.log(scoketId + " user connected");
+      // console.log(sockets[scoketId]);
 
       for (var i = 0; i < old_thread_list.length; i++) {
-        sockets[dbName + userId].join(old_thread_list[i]);
-        console.log(
-          "old room id " +
-            old_thread_list[i] +
-            " created and COL_" +
-            userId +
-            " user joined"
-        );
+        sockets[scoketId].join(old_thread_list[i]);
       }
     }
   );
