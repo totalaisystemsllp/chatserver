@@ -39,7 +39,8 @@ var sockets = {};
 var user_details = {};
 var rooms = {};
 var all_collector = [];
-var dbName = "COL_";
+var dbName = "";
+var roomName = "";
 
 app.use(bodyParser.json({ limit: "50mb" }));
 app.use(bodyParser.urlencoded({ limit: "50mb", extended: true }));
@@ -65,11 +66,11 @@ app.post("/", (req, res) => {
 
 io.on("connection", (socket) => {
   dbName = socket.handshake.query.db ?? "";
+  roomName = `ROOM_${dbName}`;
   socket.on(
     "register_user_id",
     function (userId, old_thread_list = [], role, name, email = null) {
-      let scoketId = `COL_${dbName}_${userId}`;
-
+      let scoketId = `${dbName}_${userId}`;
       sockets[scoketId] = socket;
       all_collector.push(scoketId);
       // array unique
@@ -80,10 +81,7 @@ io.on("connection", (socket) => {
         name: name,
         email: email,
       };
-      sockets[scoketId].join(role);
-
-      console.log(scoketId + " user connected");
-      // console.log(sockets[scoketId]);
+      sockets[scoketId].join(roomName);
 
       for (var i = 0; i < old_thread_list.length; i++) {
         sockets[scoketId].join(old_thread_list[i]);
@@ -92,22 +90,16 @@ io.on("connection", (socket) => {
   );
 
   socket.on("req_accept", function (thread_id, coll_id) {
-    sockets[dbName + coll_id].join(thread_id);
-    rooms[thread_id] = { coll_id: dbName + coll_id };
-    socket.to("collector").emit("remove_req_accept", thread_id);
-    console.log(
-      "new room id " +
-        thread_id +
-        " created and COL_" +
-        coll_id +
-        " user joined"
-    );
-    // console.log(rooms);
+    let scoketId = `${dbName}_${coll_id}`;
+
+    sockets[scoketId].join(thread_id);
+    rooms[thread_id] = { coll_id: scoketId };
+
+    socket.to(roomName).emit("remove_req_accept", thread_id);
   });
 
   socket.on("close", function (thread_id) {
     delete rooms[thread_id];
-    console.log("room id " + thread_id + " closed");
   });
 
   socket.on(
@@ -115,28 +107,18 @@ io.on("connection", (socket) => {
     (thread_id, from_collector_id, to_collector_id) => {
       socket.leave(thread_id);
 
-      if (sockets.hasOwnProperty(dbName + to_collector_id)) {
-        sockets[dbName + to_collector_id].join(thread_id);
+      let scoketId = `${dbName}_${coll_id}`;
+
+      if (sockets.hasOwnProperty(scoketId)) {
+        sockets[scoketId].join(thread_id);
         io.to(thread_id).emit("transfered_chat", { thread_id: thread_id });
-
-        console.log(
-          "transfer chat from user id COL_" +
-            from_collector_id +
-            " to COL_" +
-            to_collector_id +
-            " and thread id " +
-            thread_id
-        );
-
-        // rooms[thread_id][coll_id]=dbName+to_collector_id;
-        // console.log(rooms[thread_id]);
       }
     }
   );
 
   socket.on("disconnect", () => {
     let key = Object.keys(sockets)[Object.values(sockets).indexOf(socket)];
-    console.log(key + " user id is disconnected");
+
     const index = all_collector.indexOf(key);
     if (index > -1) {
       all_collector.splice(index, 1);
@@ -144,9 +126,6 @@ io.on("connection", (socket) => {
 
     delete user_details[key];
     delete sockets[key];
-    console.log(user_details);
-    console.log(all_collector);
-    // console.log(sockets);
   });
 });
 
