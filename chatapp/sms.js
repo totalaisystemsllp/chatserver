@@ -128,6 +128,6 @@ io.on("connection", (socket) => {
   });
 });
 
-server.listen(7001, function () {
+server.listen(7000, function () {
   console.log("listening on *:7000");
 });
