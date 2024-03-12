@@ -51,6 +51,13 @@ module.exports = {
         username: 'chat',
         password: 'f54nRGbTIDq38mC93CBgCLYR^4i',
         database: 'alliant_db'
+       },
+        dbcon_sage: {
+        host: '18.223.153.66',
+        port: '3306',
+        username: 'chat',
+        password: 'AQ;r{d48SLmkqH(9',
+        database: 'sage_2'
        }
      }
 };
