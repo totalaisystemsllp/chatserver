@@ -58,6 +58,6 @@ module.exports = {
         username: 'chat',
         password: 'f54nRGbTIDq38mC93CBgCLYR^4i',
         database: 'alliant_db'
-       },
+       }
      }
 };
