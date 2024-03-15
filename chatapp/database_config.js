@@ -10,6 +10,13 @@ module.exports = {
          password: 'Total@collectrchat123new',
          database: 'db_collectr'
       },
+         dbcon_demo: {
+         host: '3.23.29.137',
+         port: '3306',
+         username: 'chat',
+         password: 'DJwdfjlmFQ5j6Bqn',
+         database: 'Xm7Lrbyadh6NXw'
+      },
         dbcon_mfs: {
         host: '3.17.199.120',
         port: '3306',
