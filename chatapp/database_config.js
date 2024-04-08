@@ -65,6 +65,13 @@ module.exports = {
         username: 'chat',
         password: 'AQ;r{d48SLmkqH(9',
         database: 'sage_2'
+       },
+        dbcon_sandboxkinum: {
+        host: '3.20.69.69',
+        port: '3306',
+        username: 'chat',
+        password: 'KgCUsOeutG1Bj9wt',
+        database: 'sandbox'
        }
      }
 };
