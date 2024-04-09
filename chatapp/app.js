@@ -179,8 +179,8 @@ io.on("connection", (socket) => {
           });
         });
 
-        sockets["COL_"+item.to_id] = socket;
-          sockets["COL_"+item.to_id].join("chat_"+item.thread_id);
+        // sockets["COL_"+item.to_id] = socket;
+        //   sockets["COL_"+item.to_id].join("chat_"+item.thread_id);
         console.log("joined collector", userId);
       }
     }
