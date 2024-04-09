@@ -4,8 +4,8 @@ const mysql = require("mysql2");
 const bodyParser = require("body-parser");
 const cors = require("cors");
 const socketIO = require("socket.io");
-const fs = require('fs');
-const path = require('path');
+const fs = require("fs");
+const path = require("path");
 
 /****Get DB Configuration****/
 const database_config = require("./database_config");
@@ -54,16 +54,11 @@ var con = mysql.createConnection({
   database: "u450063211_tpai"
 });*/
 
-
 // Error logging middleware to catch and log errors
-const accessLogStream = fs.createWriteStream(path.join(__dirname, 'access.log'), { flags: 'w' });
-
-
-
-
-
-
-
+const accessLogStream = fs.createWriteStream(
+  path.join(__dirname, "access.log"),
+  { flags: "w" }
+);
 
 var sockets = {};
 var user_details = {};
@@ -85,33 +80,30 @@ io.on("connection", (socket) => {
       con.connect((err) => {
         if (err) {
           console.error("Error connecting to MySQL database:", err);
-          accessLogStream.write(JSON.stringify(err) + '\n');
+          accessLogStream.write(JSON.stringify(err) + "\n");
           return;
         } else {
-          
-            accessLogStream.write("Connected to MySQL database" + '\n');
-            console.log("Connected to MySQL database");
+          accessLogStream.write("Connected to MySQL database" + "\n");
+          console.log("Connected to MySQL database");
         }
       });
     }
   }
 
-
-   socket.on("test",function(){
-     socket.emit("test_response",1,2);
-   });
-
-   // Handle socket errors
-   socket.on('error', (error) => {
-    const logData = {
-      timestamp: new Date().toISOString(),
-      message: 'Socket Error',
-      error: error.message || 'Socket Error occurred',
-      stack: error.stack || '',
-    };
-    accessLogStream.write(JSON.stringify(logData) + '\n');
+  socket.on("test", function () {
+    socket.emit("test_response", 1, 2);
   });
 
+  // Handle socket errors
+  socket.on("error", (error) => {
+    const logData = {
+      timestamp: new Date().toISOString(),
+      message: "Socket Error",
+      error: error.message || "Socket Error occurred",
+      stack: error.stack || "",
+    };
+    accessLogStream.write(JSON.stringify(logData) + "\n");
+  });
 
   socket.on(
     "register_user_id",
@@ -125,9 +117,8 @@ io.on("connection", (socket) => {
       browser_info = null,
       device_info = null
     ) {
-       accessLogStream.write("User registered");
+      accessLogStream.write("User registered");
       if (role == "debtor") {
-        
         var sql =
           "INSERT INTO chat_user (account_number,fullname,email,phone) VALUES ('" +
           userId +
@@ -548,47 +539,45 @@ io.on("connection", (socket) => {
       "SELECT chat_thread.file_type,chat_thread.id as thread_id,chat_thread.to_id,chat_thread.from_id,chat_thread.is_accept,chat_thread.is_transfer,chat_thread.last_message,chat_thread.date,chat_thread.updated_date,chat_user.id as debtor_id,chat_user.fullname,chat_user.account_number FROM chat_thread JOIN chat_user on chat_user.id=chat_thread.from_id WHERE chat_thread.id='" +
       thread_id +
       "'";
-      socket
-      .to("collector")
-      .emit("chataccept_response", thread_id, collector_id);
-    // con.query(sql, function (err, result) {
-    //   if (result.length == 1) {
-    //     result = result[0];
+    socket.to("collector").emit("chataccept_response", thread_id, collector_id);
+    con.query(sql, function (err, result) {
+      if (result.length == 1) {
+        result = result[0];
 
-    //     $sql2 =
-    //       "UPDATE chat_thread SET is_accept=1,to_id=" +
-    //       collector_id +
-    //       ",updated_date=updated_date WHERE id=" +
-    //       thread_id;
-    //     //  console.log($sql2)
-    //     // con.query($sql2, function (err1, result1) {
-    //     //   $sql3 =
-    //     //     "UPDATE chat_system SET to_id='COL_" +
-    //     //     collector_id +
-    //     //     "',is_seen=1 WHERE thread_id=" +
-    //     //     thread_id;
-    //     //   con.query($sql3, function (err1, result1) {
-    //     //     sockets["COL_" + collector_id] = socket;
-    //     //     sockets["COL_" + collector_id].join("chat_" + thread_id);
+        $sql2 =
+          "UPDATE chat_thread SET is_accept=1,to_id=" +
+          collector_id +
+          ",updated_date=updated_date WHERE id=" +
+          thread_id;
+        //  console.log($sql2)
+        con.query($sql2, function (err1, result1) {
+          $sql3 =
+            "UPDATE chat_system SET to_id='COL_" +
+            collector_id +
+            "',is_seen=1 WHERE thread_id=" +
+            thread_id;
+          con.query($sql3, function (err1, result1) {
+            sockets["COL_" + collector_id] = socket;
+            sockets["COL_" + collector_id].join("chat_" + thread_id);
 
-    //     //     socket
-    //     //       .to("collector")
-    //     //       .emit("chataccept_response", thread_id, collector_id);
-    //     //     io.in("chat_" + thread_id).emit(
-    //     //       "chat_accept_response",
-    //     //       collector_id,
-    //     //       result.debtor_id,
-    //     //       thread_id,
-    //     //       result.fullname,
-    //     //       result.last_message,
-    //     //       result.date,
-    //     //       result.updated_date,
-    //     //       result.file_type
-    //     //     );
-    //     //   });
-    //     // });
-    //   }
-    // });
+            socket
+              .to("collector")
+              .emit("chataccept_response", thread_id, collector_id);
+            io.in("chat_" + thread_id).emit(
+              "chat_accept_response",
+              collector_id,
+              result.debtor_id,
+              thread_id,
+              result.fullname,
+              result.last_message,
+              result.date,
+              result.updated_date,
+              result.file_type
+            );
+          });
+        });
+      }
+    });
   });
   socket.on("chatclosed", (thread_id, collector_id) => {
     var sql =
@@ -713,27 +702,26 @@ io.on("connection", (socket) => {
       } else {
       }
     }
-  });
 
-
-  con.end((error) => {
-    if (error){
-      accessLogStream.write(JSON.stringify(error) + '\n');
-    } 
-    console.log('MySQL connection closed.');
+    // Close Database Connection
+    con.end((error) => {
+      if (error) {
+        accessLogStream.write(JSON.stringify(error) + "\n");
+      }
+      console.log("MySQL connection closed.");
+    });
   });
-  
 });
 
-const accessLogPath = path.join(__dirname, 'access.log');
+const accessLogPath = path.join(__dirname, "access.log");
 
-app.get('/access-log', (req, res) => {
+app.get("/access-log", (req, res) => {
   try {
-    const logData = fs.readFileSync(accessLogPath, 'utf8');
+    const logData = fs.readFileSync(accessLogPath, "utf8");
     res.send(`<pre>${logData}</pre>`);
   } catch (err) {
-    console.error('Error reading the log file:', err);
-    res.status(500).send('Error reading the log file');
+    console.error("Error reading the log file:", err);
+    res.status(500).send("Error reading the log file");
   }
 });
 
