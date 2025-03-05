@@ -26,5 +26,6 @@ module.exports = {
     "https://natcredsys.com",
     "https://dma.totalcollectr.io",
     "https://managemyloan.dashofcash.com",
+    "https://demo.totalcollectr.io",
   ],
 };
